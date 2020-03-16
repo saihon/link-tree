@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+.tree, .tree ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.tree ul {
+    position: relative;
+    margin-left: 16px;
+}
+.tree ul:before {
+    content:"";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    border-left: 1px solid #000;
+}
+.tree li  {
+    margin: 0;
+    padding: 0px 12px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: normal;
+    position: relative;
+}
+.tree > li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.tree > li::before {
+    content: "\025b6  ";
+}
+.tree li a {
+    position: relative;
+    font-size: 14px;
+    color:rgb(0, 0, 207);
+    line-height: 20px;
+    text-decoration: underline;
+    transition: all .3s;
+}
+.tree li a:hover,
+.tree li a:hover+ul li a {
+    color: rgb(161, 38, 1);
+}
+.tree ul li::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 0;
+    display: block;
+    height: 0;
+    width: 8px;
+    border-top:1px solid #000;
+}
+.tree ul li:last-child::before {
+    top: 10px;
+    bottom: 0;
+    height: auto;
+    border-left: 1px solid #fff;
+}
