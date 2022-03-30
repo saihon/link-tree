@@ -1,6 +1,6 @@
 {
   "name": "Link Tree",
-  "version": "0.1",
+  "version": "1.0",
   "description": "Displays the link URL of the web page in a tree format.",
   "icons": {
     "128": "icons/icon-128.png",
