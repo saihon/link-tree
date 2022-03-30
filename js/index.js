@@ -28,13 +28,17 @@ class URLIterator {
         let rawurl = this._url.protocol + '//';
 
         if (this._index >= this._length && this._hasQuery) {
+            if (this._length == 2) { // array value is [hostname, search]
+                return rawurl + this._a.slice(0, this._length - 1).join('/') +
+                       '/' + this._url.search;
+            }
             return rawurl + this._a.slice(0, this._length - 1).join('/') +
                    this._url.search;
         }
 
         rawurl += this._a.slice(0, this._index).join('/');
-        if (this._index < this._length ||
-            this.endSlash && !rawurl.endsWith('/')) {
+        if (!this._hasQuery && (this._index < this._length ||
+                                this.endSlash && !rawurl.endsWith('/'))) {
             rawurl += '/';
         }
         return rawurl;
