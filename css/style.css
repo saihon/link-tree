@@ -31,8 +31,14 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.tree > li::before {
+.tree > li:not(.hide)::before {
     content: "\025b6  ";
+}
+.hide::before {
+    content: "\025BC  ";
+}
+.hide > ul {
+    display: none;
 }
 .tree li a {
     position: relative;

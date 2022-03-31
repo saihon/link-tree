@@ -124,7 +124,12 @@ new (class main {
 
         const details   = {file : 'js/contentScript.js'};
         const executing = browser.tabs.executeScript(tabId, details);
-        executing.then(this.onExecuted, this.onError);
+        executing.then(this.onExecuted.bind(this), this.onError.bind(this));
+    }
+    onClicked(e) {
+        const li = e.target; // e.target is ul.tree > li
+        if (!li.parentNode.classList.contains('tree')) return;
+        li.classList.toggle('hide');
     }
     onExecuted(result) {
         if (!Array.isArray(result) || result.length < 1) return;
@@ -134,6 +139,11 @@ new (class main {
             t.addURL(link);
         }
         t.appendTo(document.body);
+
+        const a = document.querySelectorAll('ul.tree > li');
+        for (const v of a) {
+            v.addEventListener('click', this.onClicked, false);
+        }
     }
     onError(err) {
         console.error(err);
