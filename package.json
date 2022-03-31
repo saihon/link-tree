@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "debug": "npx web-ext run -u 'about:debugging#/runtime/this-firefox'"
+  },
+  "devDependencies": {
+    "web-ext": "^6.8.0"
+  }
+}
