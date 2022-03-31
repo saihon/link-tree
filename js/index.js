@@ -28,17 +28,15 @@ class URLIterator {
         let rawurl = this._url.protocol + '//';
 
         if (this._index >= this._length && this._hasQuery) {
-            if (this._length == 2) { // array value is [hostname, search]
-                return rawurl + this._a.slice(0, this._length - 1).join('/') +
-                       '/' + this._url.search;
-            }
+            // If "_length" is 2, a slash is required because the array values
+            // are "hostname" and "search".
+            let slash = this._length == 2 ? '/' : '';
             return rawurl + this._a.slice(0, this._length - 1).join('/') +
-                   this._url.search;
+                   slash + this._url.search;
         }
 
         rawurl += this._a.slice(0, this._index).join('/');
-        if (!this._hasQuery && (this._index < this._length ||
-                                this.endSlash && !rawurl.endsWith('/'))) {
+        if (this._index >= this._length && this._endSlash) {
             rawurl += '/';
         }
         return rawurl;
@@ -118,25 +116,26 @@ class Tree {
     }
 }
 
-if (/id=(\d+)/.test(location.search)) {
-    const tabId         = RegExp.$1 - 0;
-    const scriptDetails = {
-        file : 'js/contentScript.js',
-    };
-    chrome.tabs.executeScript(tabId, scriptDetails, result => {
-        if (chrome.runtime.lastError) {
-            return;
-        }
+new (class main {
+    constructor() {
+        const u     = new URL(location.href);
+        const tabId = parseInt(u.searchParams.get('id'), 10);
+        if (isNaN(tabId)) return;
 
+        const details   = {file : 'js/contentScript.js'};
+        const executing = browser.tabs.executeScript(tabId, details);
+        executing.then(this.onExecuted, this.onError);
+    }
+    onExecuted(result) {
         if (!Array.isArray(result) || result.length < 1) return;
         const links = result[0];
-
-        URLIterator.INCLUDE_QUERY = true;
-
-        const t = new Tree();
+        const t     = new Tree();
         for (const link of links) {
             t.addURL(link);
         }
         t.appendTo(document.body);
-    });
-}
+    }
+    onError(err) {
+        console.error(err);
+    }
+})();
