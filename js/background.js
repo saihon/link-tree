@@ -1,19 +1,22 @@
 
-const re = new RegExp('^https?://');
+const re = new RegExp('^(https?|file)://');
 
-const isValidURL = rawurl => {
-    return re.test(rawurl);
+const isInvalidURL = rawurl => {
+    return !re.test(rawurl);
 };
 
-chrome.browserAction.setBadgeBackgroundColor({color : '#FFFF00'});
+browser.browserAction.setBadgeBackgroundColor({color : '#FFFF00'});
+
+const resetBadgeText = tabId => {
+    return () => setTimeout(() => {
+               browser.browserAction.setBadgeText({text : '', tabId : tabId});
+           }, 1000);
+};
 
 const onClicked = tab => {
-    if (!isValidURL(tab.url)) {
-        chrome.browserAction.setBadgeText({text : '!', tabId : tab.id}, () => {
-            setTimeout(() => {
-                chrome.browserAction.setBadgeText({text : '', tabId : tab.id});
-            }, 1000);
-        });
+    if (isInvalidURL(tab.url)) {
+        browser.browserAction.setBadgeText({text : '!', tabId : tab.id},
+                                           resetBadgeText(tab.id));
         return;
     }
 
@@ -22,7 +25,7 @@ const onClicked = tab => {
         index : tab.index + 1,
         url : 'index.html?id=' + (tab.id + ''),
     };
-    chrome.tabs.create(props);
+    browser.tabs.create(props);
 };
 
-chrome.browserAction.onClicked.addListener(onClicked);
+browser.browserAction.onClicked.addListener(onClicked);
